@@ -30,3 +30,6 @@ Caso erre as credenciais da conta, o API vai retornar erro 403, caso contrário 
 ```
 
 Agora, copie o conteúdo dentro da chave "token", entre na aba Authorization, em "type" selecione "Bearer Token", e no espaço entitulado como "token" a direita, cole o conteúdo que vc copiou anteriormente.
+
+### OBS
+Caso dê algum problema relacionado a CORS no front-end, procure o arquivo "SecurityConfiguration" no diretório "back/src/main/java/com/flowers/authenticacao/infra/security/...", na linha 48, terá a origem que está permitida enviar requisições para a API, mude conforme a url que está rodando o seu front-end
