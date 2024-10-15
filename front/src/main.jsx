@@ -6,6 +6,8 @@ import Home from './routes/Home.jsx';
 import Error from './routes/Error.jsx';
 import Registro from './routes/Registro.jsx';
 import Login from './routes/Login.jsx';
+import Perfil from './routes/Perfil.jsx';
+import Add_postagem from './routes/Add-postagem.jsx';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />
+      },
+      {
+        path: "/perfil",
+        element: <Perfil />
+      },
+      {
+        path: "/add-postagem",
+        element: <Add_postagem />
       },
     ]
   }

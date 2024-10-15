@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import '../styles/LoginRegistro.css';
+import Swal from "sweetalert2";
 
 const Registro = () => {
     const [nome, setNome] = useState("");
@@ -21,30 +22,41 @@ const Registro = () => {
             })
             .then(response => {
                 if (response.status === 200) {
-                    alert(`O usuário ${nome} foi criado com sucesso`)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sucesso",
+                        text: `O usuário com o nome "${nome}" foi criado com sucesso!`,
+                        timer: 1500
+                    })
+                    .then(() => {
+                        const token = response.data.token;
 
-                    setNome("")
-                    setSenha("")
-                    setRole("")
+                        // armazena o token no armazenamento local, para que continue armazenado mesmo após fechar o navegador 
+                        localStorage.setItem("token", token);
 
-                    const token = response.data.token;
-
-                    // armazena o token no armazenamento local, para que continue armazenado mesmo após fechar o navegador 
-                    localStorage.setItem("token", token);
-
-                    // futuramente colocar para redirecionar para a rota "/" aqui
-                    window.location.href = '/'
+                        // futuramente colocar para redirecionar para a rota "/" aqui
+                        window.location.href = '/'
+                    })
                 }
             })
             .catch(error => {
                 if (error.response && error.response.status === 400) {
-                    alert(`Já existe um usuário com o nome ${nome}.`)
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro",
+                        text: `Já existe um usuário com esse nome, tente outro.`,
+                        timer: 1500
+                    })
 
                     setNome("")
                     setSenha("")
-                    setRole("")
                 } else {
-                    alert(`Erro interno no servidor: ${error.message}.`)
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro",
+                        text: `Erro interno no servidor: ${error.message}`,
+                        timer: 1500
+                    })
                 }
             })
         }

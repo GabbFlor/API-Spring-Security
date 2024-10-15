@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import '../styles/LoginRegistro.css';
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Login = () => {
     const [nome, setNome] = useState("");
@@ -19,28 +20,41 @@ const Login = () => {
             })
             .then(response => {
               if (response.status === 200) {
-                    alert(`Bem vindo ${nome}`)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sucesso",
+                        text: `Bem vindo ${nome}`,
+                        timer: 1500
+                    })
+                    .then(() => {
+                        const token = response.data.token;
 
-                    const token = response.data.token;
+                        // armazena o token no armazenamento local, para que continue armazenado mesmo após fechar o navegador 
+                        localStorage.setItem("token", token);
 
-                    // armazena o token no armazenamento local, para que continue armazenado mesmo após fechar o navegador 
-                    localStorage.setItem("token", token);
-
-                    // futuramente colocar para redirecionar para a rota "/" aqui
-                    window.location.href = '/'
-
-                    setNome("")
-                    setSenha("")
+                        // futuramente colocar para redirecionar para a rota "/" aqui
+                        window.location.href = '/'
+                    })
                 }
             })
             .catch(error => {
                 if (error.response && error.response.status === 403) {
-                    alert(`Credenciais incorretas`)
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro",
+                        text: `Nome de usuário ou senha incorretos`,
+                        timer: 1500
+                    })
 
                     setNome("")
                     setSenha("")
                 } else {
-                    alert(`Erro interno no servidor: ${error.message}.`)
+                    Swal.fire({
+                        icon: "error",
+                        title: "Erro",
+                        text: `Erro interno no servidor: ${error.message}`,
+                        timer: 1500
+                    })
                 }
             })
         }

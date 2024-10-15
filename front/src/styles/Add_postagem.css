@@ -1,0 +1,33 @@
+.form-add-postagem {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: fit-content;
+    gap: 15px;
+}
+
+.div-input-add-postagem {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 75%;
+}
+
+.div-input-add-postagem label {
+    font-size: 16px;
+}
+
+.form-input-add-postagem, .form-textarea-add-postagem {
+   width: 100%; 
+    padding: 7.5px;
+    font-size: 14px;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+}
+
+.form-textarea-add-postagem {
+    height: 75px;
+}
