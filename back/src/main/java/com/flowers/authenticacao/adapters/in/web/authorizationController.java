@@ -44,6 +44,12 @@ public class authorizationController {
 
         this.repository.save(newUser);
 
-        return ResponseEntity.ok().build();
+//        após fazer a criação do usuário, ele retorna o token do mesmo no corpo da requisição
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
+
+        var token = tokenService.generateToken((UsersEntity) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 }
