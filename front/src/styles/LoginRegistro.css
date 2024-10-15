@@ -1,0 +1,52 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 50%;
+    align-items: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.div-input {
+    display: flex;
+    flex-direction: column;
+}
+
+.div-input label {
+    font-size: 15px;
+}
+
+.div-input input {
+    width: 100%;
+    padding: 7.5px;
+    font-size: 14px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid rgb(88, 88, 88);
+}
+
+.green {
+    background-color: rgba(13, 151, 0, 0.531);
+    border: 1px solid rgb(21, 250, 0);
+}
+
+.green:hover {
+    background-color: rgba(21, 250, 0, 0.531);
+}
+
+.link {
+    font-size: 14px;
+}
+
+.select-role {
+    padding: 7.5px;
+    font-size: 14px;
+    border: 1px solid rgb(88, 88, 88);
+    outline: none;
+    border-radius: 5px;
+    background-color: white;
+}

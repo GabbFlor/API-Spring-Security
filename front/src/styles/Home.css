@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.destaque {
+    color: rgb(160, 0, 160);
+}
+
+.post-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.post {
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.titulo {
+    font-size: 16px;
+}
+
+.conteudo {
+    font-size: 15px;
+}
+
+.btn {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.red {
+    background-color: rgba(250, 0, 0, 0.531);
+    border: 1px solid rgb(250, 0, 0);
+}
+
+.red:hover {
+    background-color: rgb(250, 0, 0);
+    border: 1px solid rgb(250, 0, 0);
+}
