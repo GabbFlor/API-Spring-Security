@@ -75,7 +75,7 @@ const Login = () => {
                     />
                 </div>
 
-                <button type="submit" className="btn green">Registrar</button>
+                <button type="submit" className="btn green">Entrar</button>
                 <Link to={'/registro'} className="link">Não tenho uma conta</Link>
             </form>
         </main>
