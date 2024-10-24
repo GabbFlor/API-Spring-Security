@@ -1,4 +1,4 @@
-package com.flowers.authenticacao.infra.security;
+package com.flowers.authenticacao.application.infra.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.flowers.authenticacao.adapters.in.web;
+package com.flowers.authenticacao.application.DTO;
 
 import com.flowers.authenticacao.adapters.out.persistense.UserRole;
 

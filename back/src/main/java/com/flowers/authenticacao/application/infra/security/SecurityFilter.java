@@ -1,4 +1,4 @@
-package com.flowers.authenticacao.infra.security;
+package com.flowers.authenticacao.application.infra.security;
 
 import com.flowers.authenticacao.adapters.out.persistense.UserJpaRepository;
 import jakarta.servlet.FilterChain;

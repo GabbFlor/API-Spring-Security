@@ -1,7 +1,11 @@
 package com.flowers.authenticacao.adapters.in.web;
 
 import com.flowers.authenticacao.adapters.out.persistense.*;
-import com.flowers.authenticacao.infra.security.TokenService;
+import com.flowers.authenticacao.application.DTO.AuthenticationDTO;
+import com.flowers.authenticacao.application.DTO.LoginResponseDTO;
+import com.flowers.authenticacao.application.DTO.RegistroDTO;
+import com.flowers.authenticacao.application.DTO.UserInfoDTO;
+import com.flowers.authenticacao.application.infra.security.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

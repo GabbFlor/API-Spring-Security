@@ -1,4 +1,4 @@
-package com.flowers.authenticacao.infra.security;
+package com.flowers.authenticacao.application.infra.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
