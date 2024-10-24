@@ -5,7 +5,9 @@ import com.flowers.authenticacao.application.DTO.AuthenticationDTO;
 import com.flowers.authenticacao.application.DTO.LoginResponseDTO;
 import com.flowers.authenticacao.application.DTO.RegistroDTO;
 import com.flowers.authenticacao.application.DTO.UserInfoDTO;
+import com.flowers.authenticacao.application.domain.Users;
 import com.flowers.authenticacao.application.infra.security.TokenService;
+import com.flowers.authenticacao.application.ports.in.UsersUseCases;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -26,10 +32,13 @@ public class authorizationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserJpaRepository repository;
+    private UserJpaRepository userJpaRepository;
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private UsersUseCases usersUseCases;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
@@ -44,12 +53,12 @@ public class authorizationController {
 
     @PostMapping("/registro")
     public ResponseEntity register(@RequestBody @Valid RegistroDTO data) {
-        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+        if(this.userJpaRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         UsersEntity newUser = new UsersEntity(data.login(), encryptedPassword, data.role());
 
-        this.repository.save(newUser);
+        this.userJpaRepository.save(newUser);
 
 //        após fazer a criação do usuário, ele retorna o token do mesmo no corpo da requisição
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
@@ -62,18 +71,27 @@ public class authorizationController {
 
     @GetMapping("/info")
     public ResponseEntity<?> pegarInfosDoUsuario() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        String login = authentication.getName();
+            String login = authentication.getName();
 
-        UsersEntity user = repository.findByLogin(login);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
-        }
+            Users users = usersUseCases.PegarUmUsuario(login);
 
 //        usa o DTO para evitar de retornar a senha do usuário para o front-end
-        UserInfoDTO userResponse = new UserInfoDTO(user.getLogin(), user.getRole());
+            UserInfoDTO userResponse = new UserInfoDTO(users.getLogin(), users.getRole());
 
-        return ResponseEntity.ok(userResponse);
+            return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+        }
+        catch (NoSuchElementException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Mensagem", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+        catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Mensagem", "Erro interno no servidor: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 }

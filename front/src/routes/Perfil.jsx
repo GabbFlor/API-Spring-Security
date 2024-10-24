@@ -19,6 +19,7 @@ const Perfil = () => {
                     setProfile(response.data);
 
                     console.log("Informações do usuário resgatadas!")
+                    console.log(response.data)
                 }
             } catch (error) {
                 if (error.response && error.response.status === 403) {
