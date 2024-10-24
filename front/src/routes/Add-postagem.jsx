@@ -70,6 +70,8 @@ const Add_postagem = () => {
                     .then(() => {
                         setTitulo("")
                         setConteudo("")
+
+                        window.location.href = '/';
                     })
                 }
             })

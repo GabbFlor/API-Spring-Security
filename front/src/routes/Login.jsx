@@ -38,7 +38,7 @@ const Login = () => {
                 }
             })
             .catch(error => {
-                if (error.response && error.response.status === 403) {
+                if (error.response && error.response.status === 401) {
                     Swal.fire({
                         icon: "error",
                         title: "Erro",

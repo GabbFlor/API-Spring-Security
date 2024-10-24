@@ -40,7 +40,7 @@ const Registro = () => {
                 }
             })
             .catch(error => {
-                if (error.response && error.response.status === 400) {
+                if (error.response && error.response.status === 409) {
                     Swal.fire({
                         icon: "error",
                         title: "Erro",

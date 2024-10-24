@@ -22,10 +22,13 @@ public class UsersEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(name = "login", nullable = false, unique = true)
     private String login;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "role", nullable = false)
     private UserRole role;
 
 //    criando construtor para receber apenas login, passW e role, para quando for registrar a conta

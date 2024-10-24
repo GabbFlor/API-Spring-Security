@@ -10,9 +10,11 @@ import com.flowers.authenticacao.application.infra.security.TokenService;
 import com.flowers.authenticacao.application.ports.in.UsersUseCases;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,31 +44,51 @@ public class authorizationController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data) {
-//        criando sistema para proteger a senha no banco de dados com hash
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        try {
+            //        criando sistema para proteger a senha no banco de dados com hash
+            var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+            var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((UsersEntity) auth.getPrincipal());
+            var token = tokenService.generateToken((UsersEntity) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(token));
+        } catch (BadCredentialsException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Mensagem", "Nome de usuário ou senha incorretas.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Mensagem", "Erro interno no servidor: " + e.getMessage() + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @PostMapping("/registro")
     public ResponseEntity register(@RequestBody @Valid RegistroDTO data) {
-        if(this.userJpaRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+        try {
+            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+            UsersEntity newUser = new UsersEntity(data.login(), encryptedPassword, data.role());
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        UsersEntity newUser = new UsersEntity(data.login(), encryptedPassword, data.role());
-
-        this.userJpaRepository.save(newUser);
+            this.userJpaRepository.save(newUser);
 
 //        após fazer a criação do usuário, ele retorna o token do mesmo no corpo da requisição
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+            var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
+            var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((UsersEntity) auth.getPrincipal());
+            var token = tokenService.generateToken((UsersEntity) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+            return ResponseEntity.ok(new LoginResponseDTO(token));
+        }
+        catch (DataIntegrityViolationException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Mensagem", "Erro: " + "Já existe um usuário com o nome: '" + data.login() + "'");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+        }
+        catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("Mensagem", "Erro interno no servidor: " + e.getMessage() + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @GetMapping("/info")
